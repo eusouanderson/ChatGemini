@@ -1,0 +1,29 @@
+MIT License
+
+Significado: Este é o nome da licença. A Licença MIT é uma das licenças de software de código aberto mais populares e permissivas.
+Copyright (c) 2024 Anderson Rodrigues
+
+Significado: Esta linha estabelece que você, Anderson Rodrigues, é o detentor dos direitos autorais originais do software no ano de 2024. Isso significa que você é o criador e possui os direitos sobre o código.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+Significado (A Essência da Liberdade): Esta é a parte central da licença e a que a torna tão "permissiva". Ela basicamente diz:
+"Permissão é concedida, gratuitamente": Qualquer pessoa pode pegar e usar este software sem pagar.
+"Para qualquer pessoa que obtenha uma cópia deste software": Não importa quem você seja, se tem uma cópia do código, a permissão se aplica a você.
+"De lidar com o Software sem restrição": Você pode fazer o que quiser com ele.
+"Incluindo, sem limitação, os direitos de usar, copiar, modificar, mesclar, publicar, distribuir, sublicenciar e/ou vender cópias do Software": Aqui estão as liberdades explícitas:
+Usar: Você pode rodar o software para qualquer finalidade.
+Copiar: Pode fazer quantas cópias quiser.
+Modificar: Pode alterar o código como bem entender (adicionar recursos, corrigir bugs, etc.).
+Mesclar: Pode integrar seu código a outros projetos.
+Publicar: Pode tornar seu código disponível publicamente (como no GitHub).
+Distribuir: Pode dar cópias do software a outras pessoas.
+Sublicenciar: Pode permitir que outras pessoas, por sua vez, deem licenças para o software (isso é comum quando você o integra em seu próprio projeto com uma licença diferente, desde que seja compatível).
+Vender cópias do Software: Sim, você pode vender um produto que contenha este software, mesmo que o software em si seja "gratuito" sob a licença MIT. Você vende seu produto, não a licença MIT em si.
+"E de permitir que as pessoas a quem o Software é fornecido o façam, sujeito às seguintes condições:": Todas essas liberdades são dadas a você e a qualquer um que receba o software de você.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+Significado (A Única Condição): Esta é a única condição real para usar o software sob a licença MIT. Basicamente, ela diz:
+Se você usar (ou distribuir, modificar, etc.) este software, você DEVE incluir a licença MIT original e o aviso de direitos autorais em todas as cópias (ou partes substanciais) do seu software. Isso geralmente significa manter o arquivo LICENSE intacto no seu projeto.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+"Olá! Eu, Anderson Rodrigues, criei este código. Você pode usá-lo, copiá-lo, mudá-lo, vender um produto com ele, fazer o que quiser, sem me pagar nada. A única coisa que peço é que você mantenha este aviso de licença junto com o código. E, por favor, entenda que eu não dou nenhuma garantia de que ele funcionará perfeitamente, e não me responsabilizo por quaisquer problemas que possam surgir do uso dele."

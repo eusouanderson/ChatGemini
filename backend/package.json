@@ -1,0 +1,42 @@
+{
+	"scripts": {
+		"dev": "bun run --hot src/index.ts",
+		"migrate:generate": "bun drizzle-kit generate",
+		"migrate:up": "bun drizzle-kit migrate",
+		"migrate:down": "bun drizzle-kit migrate:down",
+		"migrate:reset": "bun drizzle-kit migrate:reset",
+		"migrate:check": "bun drizzle-kit check",
+		"migrate:pull": "bun drizzle-kit pull",
+		"studio": "bun drizzle-kit studio",
+		"analyze:project": "bun run src/scripts/analyze-project.ts",
+		"start": "bun run --hot src/index.ts",
+		"test": "bun test"
+	},
+	"type": "module",
+	"dependencies": {
+		"@fastify/cors": "^11.0.1",
+		"@google/generative-ai": "^0.24.1",
+		"chalk": "^5.4.1",
+		"dompurify": "^3.2.6",
+		"dotenv": "^17.2.1",
+		"drizzle-orm": "^0.44.3",
+		"fastify": "^5.4.0",
+		"glob": "^11.0.3",
+		"ioredis": "^5.6.1",
+		"marked": "^16.1.1",
+		"zod": "^4.0.10"
+	},
+	"devDependencies": {
+		"@types/bun": "latest",
+		"@types/node": "^24.1.0",
+		"@types/pg": "^8.15.4",
+		"drizzle-kit": "^0.31.4"
+	},
+	"name": "chatgemini",
+	"module": "src/index.ts",
+	"private": true,
+	"author": "Anderson Rodrigues <eusouanderson@outlook.com> (https://github.com/eusouanderson)",
+	"peerDependencies": {
+		"typescript": "^5"
+	}
+}
