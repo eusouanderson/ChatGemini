@@ -61,3 +61,5 @@ src/
 ```
 
 node node_modules/.bin/drizzle-kit studio
+
+bun run analyze:project /home/eusouanderson/Projetos/ChatGemini
