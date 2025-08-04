@@ -59,7 +59,6 @@ ${allSummaries}
 export async function analyzeProjectUseCase(projectPath: string): Promise<any> {
   try {
     const reader = new ProjectReaderService();
-    // 1. Obter o conteúdo do projeto já dividido em chunks
     const projectChunks = await reader.getProjectContentInChunks(projectPath);
     const totalChunks = projectChunks.length;
 
@@ -89,7 +88,7 @@ export async function analyzeProjectUseCase(projectPath: string): Promise<any> {
       const jsonMatch = finalReportRaw.match(/```json\n([\s\S]*?)\n```/);
       const jsonString = jsonMatch ? jsonMatch[1] : finalReportRaw;
 
-      const jsonResponse = JSON.parse(jsonString);
+      const jsonResponse = JSON.parse(jsonString ?? '{}');
       return jsonResponse;
     } catch (e) {
       console.error(

@@ -1,3 +1,4 @@
+import { analysisRoutes } from '@/interfaces/http/routes/analysis.routes';
 import { chatRoutes } from '@/interfaces/http/routes/chat.routes';
 import cors from '@fastify/cors';
 import Fastify from 'fastify';
@@ -19,6 +20,7 @@ export const buildServer = async () => {
     { prefix: '/api' }
   );
 
+  await fastify.register(analysisRoutes, { prefix: '/api' });
   await fastify.register(chatRoutes, { prefix: '/api' });
 
   return fastify;

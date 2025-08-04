@@ -9,3 +9,12 @@ Content-Type: application/json
   "content": "Qual o meu nome ?",
   "sessionId": "1234abcd"
 }
+
+###
+POST {{baseUrl}}/api/analyze
+Content-Type: application/json
+
+{
+  "projectPath": "/app"
+}
+

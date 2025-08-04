@@ -34,7 +34,7 @@ export class ProjectReaderService {
       cwd: projectPath,
       ignore: ProjectReaderService.IGNORE_PATTERNS,
       nodir: true,
-      dot: true, // Garante que arquivos como .env ou .eslintrc sejam incluídos
+      dot: true,
     });
 
     if (files.length === 0) {
