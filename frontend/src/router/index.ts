@@ -1,6 +1,8 @@
 import { createMemoryHistory, createRouter } from "vue-router";
 
-const manualRoutes = [{ path: "/", name: "Chat", component: "" }];
+import ChatView from "@/page/ChatPage.vue";
+
+const manualRoutes = [{ path: "/", name: "Chat", component: ChatView }];
 
 export const router = createRouter({
   history: createMemoryHistory(),

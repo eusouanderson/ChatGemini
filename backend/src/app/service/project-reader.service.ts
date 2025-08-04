@@ -23,8 +23,6 @@ export class ProjectReaderService {
     '**/*.{png,jpg,jpeg,gif,svg,ico,webp,avif,mp4,mov,zip}',
   ];
 
-  // limite de caracteres por chunk.
-
   private static MAX_CHUNK_SIZE_IN_CHARS = 800_000;
 
   public async getProjectContentInChunks(projectPath: string): Promise<string[]> {
@@ -41,39 +39,60 @@ export class ProjectReaderService {
       throw new Error('Nenhum arquivo relevante encontrado no diretório especificado.');
     }
 
+    console.log(`  - ${files.length} arquivos encontrados. Lendo conteúdo em paralelo...`);
+
+    // --- OTIMIZAÇÃO 1: Leitura de arquivos em paralelo ---
+    const fileContents = await Promise.all(
+      files.map(async (file) => {
+        const filePath = path.join(projectPath, file);
+        try {
+          const content = await fs.readFile(filePath, 'utf-8');
+          console.log(`  - Lendo arquivo: ${file}`);
+          return { file, content };
+        } catch (error: any) {
+          // Ignora erros de leitura (ex: arquivos binários) e retorna null
+          console.warn(`  - Aviso: Não foi possível ler o arquivo ${file}. Pulando.`);
+          return null;
+        }
+      })
+    );
+
+    console.log('✅ Leitura de arquivos concluída. Montando lotes (chunks)...');
+
+    // --- OTIMIZAÇÃO 2: Lógica de chunking robusta ---
     const chunks: string[] = [];
     let currentChunk = '';
     let processedFileCount = 0;
 
-    for (const file of files) {
-      const filePath = path.join(projectPath, file);
-      try {
-        const content = await fs.readFile(filePath, 'utf-8');
-        console.log(`  - Lendo arquivo: ${file}`);
+    // Filtra os arquivos que não puderam ser lidos
+    const validFiles = fileContents.filter(Boolean) as { file: string; content: string }[];
 
-        const fileEntry = `--- FILE: ${file} ---\n${content}\n--- END FILE ---\n\n`;
+    for (const { file, content } of validFiles) {
+      const fileEntry = `--- FILE: ${file} ---\n${content}\n--- END FILE ---\n\n`;
 
+      // Se o arquivo sozinho já estoura o limite, ele precisa ser quebrado
+      if (fileEntry.length > ProjectReaderService.MAX_CHUNK_SIZE_IN_CHARS) {
+        // Primeiro, adiciona o chunk atual (se houver) para não misturar conteúdos
+        if (currentChunk.length > 0) {
+          chunks.push(currentChunk);
+          currentChunk = '';
+        }
+
+        // Quebra o conteúdo do arquivo grande em pedaços
+        for (let i = 0; i < fileEntry.length; i += ProjectReaderService.MAX_CHUNK_SIZE_IN_CHARS) {
+          const part = fileEntry.substring(i, i + ProjectReaderService.MAX_CHUNK_SIZE_IN_CHARS);
+          chunks.push(part);
+        }
+      } else {
+        // Se adicionar o arquivo excede o limite, fecha o chunk atual e inicia um novo
         if (currentChunk.length + fileEntry.length > ProjectReaderService.MAX_CHUNK_SIZE_IN_CHARS) {
-          if (currentChunk.length > 0) {
-            chunks.push(currentChunk);
-          }
-
+          chunks.push(currentChunk);
           currentChunk = fileEntry;
         } else {
           currentChunk += fileEntry;
         }
-        processedFileCount++;
-      } catch (error: any) {
-        if (error.code === 'ENOENT') {
-          console.warn(
-            `  - Aviso: Arquivo ${file} não encontrado. Pode ter sido removido durante a execução.`
-          );
-        } else {
-          console.warn(
-            `  - Aviso: Não foi possível ler o arquivo ${file} (provavelmente não é um texto). Pulando.`
-          );
-        }
       }
+      processedFileCount++;
     }
 
     if (currentChunk.length > 0) {
@@ -81,7 +100,7 @@ export class ProjectReaderService {
     }
 
     console.log(
-      `✅ Leitura concluída. ${processedFileCount} arquivos processados e divididos em ${chunks.length} lote(s).`
+      `✅ Processamento concluído. ${processedFileCount} arquivos processados e divididos em ${chunks.length} lote(s).`
     );
     return chunks;
   }

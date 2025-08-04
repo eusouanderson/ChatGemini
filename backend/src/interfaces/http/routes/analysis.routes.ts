@@ -1,20 +1,25 @@
-import { analyzeProjectUseCase } from '@/app/user-cases/analyze-project';
+import { analyzeProjectUseCase } from '@/cli/analyze-project';
 import { FastifyInstance } from 'fastify';
 
 export async function analysisRoutes(app: FastifyInstance) {
   app.post('/analyze', async (request, reply) => {
-    const body = request.body as { projectPath?: string };
+    // 1. ATUALIZAÇÃO: Extrair também o sessionId do corpo da requisição.
+    const body = request.body as { projectPath?: string; sessionId?: string };
 
     if (!body?.projectPath) {
       return reply.status(400).send({ error: 'O campo projectPath é obrigatório.' });
     }
 
     try {
-      const result = await analyzeProjectUseCase(body.projectPath);
+      // 2. CORREÇÃO: Chamar o use case passando um objeto como argumento.
+      const result = await analyzeProjectUseCase({
+        projectPath: body.projectPath,
+        sessionId: body.sessionId,
+      });
+
       return reply.send(result);
     } catch (error: any) {
-      // Log completo para facilitar o debug
-      app.log.error(error);
+      app.log.error(error, 'Erro durante a execução de analyzeProjectUseCase');
 
       if (error.message?.includes('Nenhum arquivo relevante encontrado')) {
         return reply

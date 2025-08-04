@@ -11,7 +11,6 @@ interface ChatMessage {
 }
 
 export const useChatStore = defineStore("chat", () => {
-  // Definindo os estados iniciais para fácil reuso no $reset()
   const initialMessages: ChatMessage[] = [];
   const initialIsLoading = false;
   const initialError: string | null = null;
@@ -23,12 +22,11 @@ export const useChatStore = defineStore("chat", () => {
     localStorage.setItem(SESSION_KEY, currentSessionId);
   }
   const sessionId = ref<string>(currentSessionId);
-
   const messages = ref<ChatMessage[]>(initialMessages);
   const isLoading = ref(initialIsLoading);
   const error = ref<string | null>(initialError);
-
-  const API_URL = "http://localhost:3000/api/chat";
+  const CHAT_API_URL = import.meta.env.VITE_CHAT_API_URL;
+  const ANALYZE_API_URL = import.meta.env.VITE_ANALYZE_API_URL;
 
   const sendMessage = async (content: string): Promise<void> => {
     try {
@@ -43,7 +41,7 @@ export const useChatStore = defineStore("chat", () => {
       });
 
       const response = await axios.post<{ content: string; sessionId: string }>(
-        API_URL,
+        CHAT_API_URL,
         {
           content,
           sessionId: sessionId.value,
@@ -57,8 +55,44 @@ export const useChatStore = defineStore("chat", () => {
         timestamp: new Date(),
       });
     } catch (err: any) {
-      error.value = err.message || "Erro desconhecido";
+      error.value = err.message || "Erro desconhecido ao enviar mensagem.";
       console.error("Erro ao enviar mensagem:", err);
+    } finally {
+      isLoading.value = false;
+    }
+  };
+
+  const analyzeProject = async (projectPath: string): Promise<void> => {
+    try {
+      isLoading.value = true;
+      error.value = null;
+      messages.value.push({
+        content: `Analisando o projeto em "${projectPath}"...`,
+        sender: "gemini",
+        timestamp: new Date(),
+        sessionId: sessionId.value,
+      });
+
+      const response = await axios.post<{ result: string }>(ANALYZE_API_URL, {
+        projectPath,
+        sessionId: sessionId.value,
+      });
+
+      if (response.data && response.data.result) {
+        console.log("Análise do projeto concluída:", response.data.result);
+
+        // Correto: Acesse a propriedade `result` dentro de `response.data`
+        messages.value.push({
+          content: response.data.result, // <--- CORREÇÃO APLICADA
+          sender: "gemini",
+          timestamp: new Date(),
+          sessionId: sessionId.value,
+        });
+      }
+
+      console.log("Análise do projeto concluída e exibida!");
+    } catch (err: any) {
+      // ... (bloco catch inalterado)
     } finally {
       isLoading.value = false;
     }
@@ -70,5 +104,13 @@ export const useChatStore = defineStore("chat", () => {
     error.value = initialError;
   };
 
-  return { messages, isLoading, error, sendMessage, sessionId, $reset };
+  return {
+    messages,
+    isLoading,
+    error,
+    sendMessage,
+    sessionId,
+    analyzeProject,
+    $reset,
+  };
 });

@@ -8,6 +8,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    Analize: typeof import('./src/components/molecules/Analize.vue')['default']
     AutoResizeInput: typeof import('./src/components/atoms/AutoResizeInput.vue')['default']
     Button: typeof import('./src/components/atoms/Button.vue')['default']
     ChatGemini: typeof import('./src/components/ChatGemini.vue')['default']

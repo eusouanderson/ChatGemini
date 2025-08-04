@@ -15,6 +15,7 @@ POST {{baseUrl}}/api/analyze
 Content-Type: application/json
 
 {
-  "projectPath": "/app"
+  "projectPath": "/app",
+   "sessionId": "1234abcd"
 }
 

@@ -1,4 +1,4 @@
-import { analyzeProjectUseCase } from '@/app/user-cases/analyze-project';
+import { analyzeProjectUseCase } from '@/cli/analyze-project';
 import chalk from 'chalk';
 import path from 'path';
 

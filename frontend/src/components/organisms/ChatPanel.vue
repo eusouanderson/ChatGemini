@@ -1,4 +1,5 @@
 <template>
+  <Analize />
   <v-card
     class="pa-4 d-flex flex-column justify-space-between"
     elevation="8"
@@ -28,6 +29,7 @@ import { computed } from "vue";
 import { useChatStore } from "@/service/chat";
 import ChatMessagesList from "@/components/molecules/ChatMessagesList.vue";
 import ChatInput from "@/components/molecules/ChatInput.vue";
+import Analize from "../molecules/Analize.vue";
 
 const chat = useChatStore();
 
