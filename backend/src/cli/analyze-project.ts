@@ -1,13 +1,9 @@
-import type { Message } from '@/app/entities/message.entity'; // <-- ADICIONAR IMPORT
+import type { Message } from '@/app/entities/message.entity';
 import { callGeminiAPI } from '@/app/service/gemini.service';
 import { ProjectReaderService } from '@/app/service/project-reader.service';
-import { chatRepository } from '@/infrastructure/redis/chat.repository'; // <-- ADICIONAR IMPORT
+import { chatRepository } from '@/infrastructure/redis/chat.repository';
+import { v4 as uuidv4 } from 'uuid';
 
-// ---
-// 1. ALTERAÇÃO: Adicionar o histórico da conversa ao prompt de análise
-// ---
-
-// Função auxiliar para evitar duplicação de código na formatação do histórico
 function formatHistoryForPrompt(history: Message[]): string {
   if (history.length === 0) {
     return 'Nenhum histórico de conversa anterior.';
@@ -17,18 +13,20 @@ function formatHistoryForPrompt(history: Message[]): string {
     .join('\n');
 }
 
-// ALTERADO: A função agora recebe o histórico como parâmetro
 function createChunkAnalysisPrompt(
   chunk: string,
   chunkIndex: number,
   totalChunks: number,
-  history: string // NOVO: parâmetro para o histórico formatado
+  history: string
 ): string {
   return `
 # ROLE
 Você é um Engenheiro de Software Sênior.
 
 # CONTEXT
+A análise será feita diretamente nos arquivos do projeto, **mas qualquer arquivo contendo dados sensíveis (ex.: .env, credenciais, chaves privadas) deve ser totalmente ignorado na avaliação**.  
+Caso esses arquivos apareçam, não os classifique como falha de segurança — considere-os apenas como conteúdo não analisável.  
+
 Você está analisando um grande projeto de software em partes. Você recebeu o LOTE ${chunkIndex} de ${totalChunks}.
 Sua análise preliminar será usada posteriormente para gerar um relatório consolidado.
 Abaixo está o histórico da conversa atual para lhe dar contexto sobre o que o usuário pode ter pedido anteriormente.
@@ -51,7 +49,6 @@ ${chunk}
 `;
 }
 
-// ALTERADO: Adicionando histórico também ao relatório final para consistência
 function createFinalReportPrompt(allSummaries: string, history: string): string {
   return `
 # ROLE
@@ -90,22 +87,15 @@ ${allSummaries}
 `;
 }
 
-// ---
-// 2. ALTERAÇÃO: Atualizar o use case principal para usar o sessionId
-// ---
-
-// NOVO: Interface para os parâmetros de entrada
-interface AnalyzeProjectInput {
+export interface AnalyzeProjectInput {
   projectPath: string;
   sessionId?: string;
 }
 
-// ALTERADO: A função agora recebe um objeto de input
 export async function analyzeProjectUseCase(input: AnalyzeProjectInput): Promise<any> {
-  const { projectPath, sessionId } = input; // <-- Desestruturação dos parâmetros
+  const { projectPath, sessionId } = input;
 
   try {
-    // NOVO: Busca o histórico da conversa usando o sessionId
     const conversationHistory = sessionId ? await chatRepository.getAll(sessionId) : [];
     const formattedHistory = formatHistoryForPrompt(conversationHistory);
 
@@ -126,7 +116,19 @@ export async function analyzeProjectUseCase(input: AnalyzeProjectInput): Promise
         totalChunks,
         formattedHistory
       );
+
       const preliminaryAnalysis = await callGeminiAPI(chunkPrompt);
+
+      // Salva a análise preliminar como mensagem da IA
+      if (sessionId) {
+        await chatRepository.save(sessionId, {
+          id: uuidv4(),
+          role: 'assistant',
+          content: `--- ANÁLISE DO LOTE ${index + 1}/${totalChunks} ---\n${preliminaryAnalysis}`,
+          timestamp: Date.now(),
+        });
+      }
+
       chunkAnalyses.push(
         `--- ANÁLISE DO LOTE ${index + 1}/${totalChunks} ---\n${preliminaryAnalysis}`
       );
@@ -136,11 +138,19 @@ export async function analyzeProjectUseCase(input: AnalyzeProjectInput): Promise
     console.log('🤖 Sintetizando o relatório final...');
 
     const allSummaries = chunkAnalyses.join('\n\n');
-    // ALTERADO: Passa o histórico também para o prompt final
     const finalReportPrompt = createFinalReportPrompt(allSummaries, formattedHistory);
 
     const finalReportRaw = await callGeminiAPI(finalReportPrompt);
-    console.log('✅ Relatório final recebido da IA!');
+
+    // Salva o relatório final como mensagem da IA
+    if (sessionId) {
+      await chatRepository.save(sessionId, {
+        id: uuidv4(),
+        role: 'assistant',
+        content: `--- RELATÓRIO FINAL ---\n${finalReportRaw}`,
+        timestamp: Date.now(),
+      });
+    }
 
     try {
       const jsonMatch = finalReportRaw.match(/```json\n([\s\S]*?)\n```/);

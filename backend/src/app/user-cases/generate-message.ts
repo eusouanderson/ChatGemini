@@ -5,7 +5,7 @@ import { messageSchema as messages } from '@/infrastructure/db/drizzle/message-s
 import { chatRepository } from '@/infrastructure/redis/chat.repository';
 import type { MessageInput } from '@/interfaces/http/validators/message';
 
-interface GenerateMessageInput extends MessageInput {
+export interface GenerateMessageInput extends MessageInput {
   sessionId?: string;
 }
 

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h3>Analisar Projeto Diretamente</h3>
-    <input v-model="projectPath" placeholder="Caminho do projeto" />
+    <h3>Analisar Projeto</h3>
+
     <Button @click="triggerAnalysis" :disabled="chatStore.isLoading">
       {{ chatStore.isLoading ? "Analisando..." : "Analisar" }}
     </Button>

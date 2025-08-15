@@ -1,5 +1,6 @@
 {
 	"scripts": {
+		"start": "bun src/index.ts",
 		"dev": "bun run --hot src/index.ts",
 		"migrate:generate": "bun drizzle-kit generate",
 		"migrate:up": "bun drizzle-kit migrate",
@@ -8,8 +9,6 @@
 		"migrate:check": "bun drizzle-kit check",
 		"migrate:pull": "bun drizzle-kit pull",
 		"studio": "bun drizzle-kit studio",
-		"analyze:project": "bun run src/scripts/analyze-project.ts",
-		"start": "bun run --hot src/index.ts",
 		"test": "bun test"
 	},
 	"type": "module",
@@ -26,6 +25,7 @@
 		"glob": "^11.0.3",
 		"ioredis": "^5.6.1",
 		"marked": "^16.1.1",
+		"uuid": "^11.1.0",
 		"zod": "^4.0.14"
 	},
 	"devDependencies": {

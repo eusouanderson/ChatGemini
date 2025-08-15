@@ -1,9 +1,8 @@
 import { analyzeProjectUseCase } from '@/cli/analyze-project';
-import { FastifyInstance } from 'fastify';
+import type { FastifyInstance } from 'fastify';
 
 export async function analysisRoutes(app: FastifyInstance) {
   app.post('/analyze', async (request, reply) => {
-    // 1. ATUALIZAÇÃO: Extrair também o sessionId do corpo da requisição.
     const body = request.body as { projectPath?: string; sessionId?: string };
 
     if (!body?.projectPath) {
@@ -11,7 +10,6 @@ export async function analysisRoutes(app: FastifyInstance) {
     }
 
     try {
-      // 2. CORREÇÃO: Chamar o use case passando um objeto como argumento.
       const result = await analyzeProjectUseCase({
         projectPath: body.projectPath,
         sessionId: body.sessionId,
@@ -26,8 +24,6 @@ export async function analysisRoutes(app: FastifyInstance) {
           .status(404)
           .send({ error: 'Nenhum arquivo relevante encontrado no diretório especificado.' });
       }
-
-      // Outros erros inesperados
       return reply.status(500).send({ error: 'Erro ao analisar o projeto.' });
     }
   });

@@ -115,6 +115,7 @@ bun run analyze:project /home/usuario/projetos/meu-outro-projeto
 Estrutura do Projeto
 O projeto segue uma arquitetura inspirada na Arquitetura Limpa (Clean Architecture) para garantir a separação de responsabilidades e a manutenibilidade.
 
+```bash
 src/
 ├── app/ # Lógica de negócio principal (independente de frameworks)
 │ ├── entities/ # Entidades de negócio (ex: Message)
@@ -137,6 +138,8 @@ src/
 └── server.ts # Ponto de entrada da aplicação web (servidor Fastify)
 Exemplo de Uso da API
 Você pode usar cURL ou uma ferramenta como Insomnia/Postman para testar os endpoints.
+
+```
 
 Analisar um Projeto:
 

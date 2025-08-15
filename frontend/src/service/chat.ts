@@ -42,10 +42,7 @@ export const useChatStore = defineStore("chat", () => {
 
       const response = await axios.post<{ content: string; sessionId: string }>(
         CHAT_API_URL,
-        {
-          content,
-          sessionId: sessionId.value,
-        }
+        { content, sessionId: sessionId.value }
       );
 
       messages.value.push({
@@ -66,33 +63,58 @@ export const useChatStore = defineStore("chat", () => {
     try {
       isLoading.value = true;
       error.value = null;
+
+      const response = await axios.post(ANALYZE_API_URL, {
+        projectPath,
+        sessionId: sessionId.value,
+      });
+
+      const data = response.data;
+
+      if (!data) {
+        messages.value.push({
+          content: "Nenhum resultado retornado pelo backend.",
+          sender: "gemini",
+          timestamp: new Date(),
+          sessionId: sessionId.value,
+        });
+        return;
+      }
+
+      const summaryMessage = `
+📌 Projeto: ${data.projectName || "Desconhecido"}
+⭐ Score geral: ${data.overallScore ?? "N/A"}
+📝 Resumo: ${data.summary || "Sem resumo disponível"}
+      `;
       messages.value.push({
-        content: `Analisando o projeto em "${projectPath}"...`,
+        content: summaryMessage.trim(),
         sender: "gemini",
         timestamp: new Date(),
         sessionId: sessionId.value,
       });
 
-      const response = await axios.post<{ result: string }>(ANALYZE_API_URL, {
-        projectPath,
-        sessionId: sessionId.value,
-      });
-
-      if (response.data && response.data.result) {
-        console.log("Análise do projeto concluída:", response.data.result);
-
-        // Correto: Acesse a propriedade `result` dentro de `response.data`
-        messages.value.push({
-          content: response.data.result, // <--- CORREÇÃO APLICADA
-          sender: "gemini",
-          timestamp: new Date(),
-          sessionId: sessionId.value,
-        });
+      if (data.analysis) {
+        for (const [category, details] of Object.entries<any>(data.analysis)) {
+          const detailMessage = `
+🔹 ${category.toUpperCase()}
+Pontuação: ${details.score ?? "N/A"}
+Justificativa: ${details.justification || "Sem justificativa"}
+Sugestões:
+- ${details.suggestions?.join("\n- ") || "Sem sugestões"}
+          `;
+          messages.value.push({
+            content: detailMessage.trim(),
+            sender: "gemini",
+            timestamp: new Date(),
+            sessionId: sessionId.value,
+          });
+        }
       }
 
-      console.log("Análise do projeto concluída e exibida!");
+      console.log("Análise do projeto concluída e exibida no chat.");
     } catch (err: any) {
-      // ... (bloco catch inalterado)
+      error.value = err.message || "Erro desconhecido ao analisar projeto.";
+      console.error("Erro na análise do projeto:", err);
     } finally {
       isLoading.value = false;
     }
