@@ -83,11 +83,13 @@ O projeto `ChatGemini` adota uma estrutura de monorepo implícita, com o fronten
 
 ### Raiz do Projeto
 
+```bash
 .
 ├── backend/ # Código-fonte do servidor API e lógica de negócio
 ├── frontend/ # Código-fonte da aplicação web do cliente
 ├── bun.lock # Lockfile global do Bun (se houver um workspace Bun na raiz)
 └── README.md # Documentação principal do projeto
+```
 
 ### Frontend (`frontend/`)
 
@@ -95,6 +97,7 @@ O diretório `frontend/` contém toda a aplicação Vue.js, estruturada para mod
 
 #### Visão Geral - Frontend
 
+```bash
 frontend/
 ├── bun.lock # Lockfile do Bun para dependências do frontend
 ├── components.d.ts # Arquivo de tipos gerado para componentes Vue
@@ -116,6 +119,7 @@ frontend/
 ├── tsconfig.json # Configuração TypeScript base
 ├── tsconfig.node.json # Configuração TypeScript para o ambiente Node.js (Vite)
 └── vite.config.ts # Configuração do Vite para build e desenvolvimento
+```
 
 #### Arquitetura de Componentes (Atomic Design)
 
@@ -152,6 +156,7 @@ O diretório `backend/` hospeda o servidor API do projeto, implementando uma arq
 
 #### Visão Geral - Backend
 
+````bash
 backend/
 ├── bun.lock # Lockfile do Bun para dependências do backend
 ├── bun.test.ts # Arquivo de testes Bun
@@ -171,7 +176,7 @@ backend/
 │ ├── interfaces/ # Adapters/Ports para interfaces externas
 │ └── shared/ # Código compartilhado
 └── tsconfig.json # Configuração TypeScript do backend
-
+```
 #### Arquitetura (Clean / Hexagonal)
 
 O backend segue um padrão de arquitetura que lembra a Clean Architecture ou Hexagonal Architecture, com uma clara separação de responsabilidades em camadas:
@@ -290,3 +295,4 @@ Durante a análise da estrutura, algumas observações foram feitas:
 Para quaisquer dúvidas ou informações adicionais, entre em contato com Anderson.
 
 ---
+````
