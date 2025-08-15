@@ -156,7 +156,7 @@ O diretório `backend/` hospeda o servidor API do projeto, implementando uma arq
 
 #### Visão Geral - Backend
 
-````bash
+```bash
 backend/
 ├── bun.lock # Lockfile do Bun para dependências do backend
 ├── bun.test.ts # Arquivo de testes Bun
@@ -177,6 +177,7 @@ backend/
 │ └── shared/ # Código compartilhado
 └── tsconfig.json # Configuração TypeScript do backend
 ```
+
 #### Arquitetura (Clean / Hexagonal)
 
 O backend segue um padrão de arquitetura que lembra a Clean Architecture ou Hexagonal Architecture, com uma clara separação de responsabilidades em camadas:
@@ -295,4 +296,3 @@ Durante a análise da estrutura, algumas observações foram feitas:
 Para quaisquer dúvidas ou informações adicionais, entre em contato com Anderson.
 
 ---
-````
