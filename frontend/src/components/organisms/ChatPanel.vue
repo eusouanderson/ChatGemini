@@ -1,20 +1,23 @@
 <template>
   <Analize />
   <v-card
-    class="pa-4 d-flex flex-column justify-space-between"
+    class="pa-4 d-flex flex-column justify-space-between mx-auto rounded-2xl"
     elevation="8"
-    height="90vh"
-    style="min-width: 900px; max-width: 90vw; width: auto"
+    style="width: 100%; max-width: 1200px; min-height: 70vh; height: 90vh"
   >
-    <v-card-title class="d-flex align-center">
-      <div class="text-h6 text-primary">Chat</div>
+    <v-card-title class="d-flex align-center rounded-2xl">
+      <div class="text-h6 text-primary basis-auto font-bold animate-pulse">
+        Chat
+      </div>
       <v-spacer></v-spacer>
       <v-btn text @click="clearChatSession" color="error" :disabled="isLoading">
         Limpar Sessão
       </v-btn>
     </v-card-title>
 
-    <ChatMessagesList :messages="messages" :isLoading="isLoading" />
+    <div class="flex-grow-1 overflow-auto">
+      <ChatMessagesList :messages="messages" :isLoading="isLoading" />
+    </div>
 
     <ChatInput @sendMessage="handleSendMessage" :isLoading="isLoading" />
 
@@ -44,7 +47,20 @@ const error = computed(() => chat.error);
 const clearChatSession = () => {
   localStorage.removeItem("chat-session-id");
   chat.$reset();
-
   window.location.reload();
 };
 </script>
+
+<style scoped>
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.flex-grow-1 {
+  flex-grow: 1;
+}
+.overflow-auto {
+  overflow-y: auto;
+}
+</style>
